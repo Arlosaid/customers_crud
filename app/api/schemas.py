@@ -3,7 +3,7 @@ import re
 
 def validate_phone(v: str) -> str:
     if not re.match(r'^\d{10}$', v):
-        raise ValueError('El teléfono debe tener exactamente 10 dígitos')
+        raise ValueError('String should have at least 10 characters')
     return v
 
 class NombreCliente(BaseModel):
@@ -22,7 +22,7 @@ class ClienteBase(BaseModel):
     @validator('edad')
     def validar_edad(cls, v):
         if v < 18:
-            raise ValueError('El cliente debe ser mayor de 18 años')
+            raise ValueError('Input should be greater than 17')
         return v
 
 class ClienteCreate(ClienteBase):

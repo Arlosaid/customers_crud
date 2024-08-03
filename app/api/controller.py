@@ -1,56 +1,49 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from fastapi import status
 
 from app.api import schemas, repository
 from app.db.database import get_db
 
 router = APIRouter()
 
-@router.post("/clientes/", response_model=schemas.Cliente)
-def create_cliente(cliente: schemas.ClienteCreate, db: Session = Depends(get_db)):
-    db_cliente = repository.get_cliente(db, telefono=cliente.telefono)
+@router.post("/customers", response_model=schemas.Cliente, status_code=status.HTTP_201_CREATED)
+def create_cliente(customer: schemas.ClienteCreate, db: Session = Depends(get_db)):
+    db_cliente = repository.get_cliente(db, telefono=customer.telefono)
     if db_cliente:
-        raise HTTPException(status_code=400, detail="Teléfono ya registrado")
-    db_cliente = repository.create_cliente(db=db, cliente=cliente)
-    # Convertir al modelo Pydantic
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Phone already registered")
+    db_cliente = repository.create_cliente(db=db, customer=customer)
     return schemas.Cliente(
         nombreCliente=schemas.NombreCliente(nombre=db_cliente.nombre, apellido=db_cliente.apellido),
         telefono=db_cliente.telefono,
         edad=db_cliente.edad
     )
 
-@router.get("/clientes/{telefono}", response_model=schemas.Cliente)
+@router.get("/customers/{phone}", response_model=schemas.Cliente)
 def read_cliente(telefono: str, db: Session = Depends(get_db)):
     db_cliente = repository.get_cliente(db, telefono=telefono)
     if db_cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    # Convertir al modelo Pydantic
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return schemas.Cliente(
         nombreCliente=schemas.NombreCliente(nombre=db_cliente.nombre, apellido=db_cliente.apellido),
         telefono=db_cliente.telefono,
         edad=db_cliente.edad
     )
 
-@router.put("/clientes/{telefono}", response_model=schemas.Cliente)
-def update_cliente(telefono: str, cliente: schemas.ClienteCreate, db: Session = Depends(get_db)):
-    db_cliente = repository.update_cliente(db, telefono=telefono, cliente=cliente)
+@router.put("/customers/{phone}", response_model=schemas.Cliente)
+def update_cliente(telefono: str, customer: schemas.ClienteCreate, db: Session = Depends(get_db)):
+    db_cliente = repository.update_cliente(db, telefono=telefono, customer=customer)
     if db_cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    # Convertir al modelo Pydantic
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return schemas.Cliente(
         nombreCliente=schemas.NombreCliente(nombre=db_cliente.nombre, apellido=db_cliente.apellido),
         telefono=db_cliente.telefono,
         edad=db_cliente.edad
     )
 
-@router.delete("/clientes/{telefono}", response_model=schemas.Cliente)
+@router.delete("/customers/{phone}", response_model=None,status_code=status.HTTP_204_NO_CONTENT)
 def delete_cliente(telefono: str, db: Session = Depends(get_db)):
     db_cliente = repository.delete_cliente(db, telefono=telefono)
     if db_cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    # Convertir al modelo Pydantic
-    return schemas.Cliente(
-        nombreCliente=schemas.NombreCliente(nombre=db_cliente.nombre, apellido=db_cliente.apellido),
-        telefono=db_cliente.telefono,
-        edad=db_cliente.edad
-    )
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return None
