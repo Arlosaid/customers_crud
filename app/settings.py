@@ -1,21 +1,24 @@
 from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
 
 class Settings(BaseModel):
-    # Configuración de la base de datos
-    db_host: str = "localhost"
-    db_user: str = "root"
-    db_password: str = "admin"
-    db_name: str = "crud"
-    db_port: str = "3306"
+    load_dotenv()
+
+    db_host: str = os.getenv('DB_HOST')
+    db_user: str = os.getenv('DB_USERNAME')
+    db_password: str = os.getenv('DB_PASSWORD')
+    db_name: str = os.getenv('DB_NAME')
+    db_port: int = os.getenv('DB_PORT')
 
     # Configuración de la API
     api_prefix: str = "/api/v1"
-    project_name: str = "Mi API"
-    project_description: str = "Esta es una API de ejemplo con FastAPI"
+    project_name: str = "Customers CRUD"
+    project_description: str = "CRUD for customers"
     project_version: str = "1.0.0"
-    openapi_url: str = "/api/v1/openapi.json"
-    docs_url: str = "/documentacion"
-    redoc_url: str = "/redoc"
+    openapi_url: str = f"{api_prefix}/openapi.json"
+    docs_url: str = f"{api_prefix}/docs"
+    redoc_url: str = f"{api_prefix}/redoc"
 
     # Configuración general
     debug: bool = False

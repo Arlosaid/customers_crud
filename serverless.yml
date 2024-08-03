@@ -28,6 +28,7 @@ provider:
     DB_USERNAME: ${env:DB_USERNAME}
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_NAME: ${env:DB_NAME}
+    DB_PORT: ${env:DB_PORT}
 
 package:
   individually: true
@@ -59,12 +60,12 @@ package:
 
 custom:
   pythonRequirements:
-    dockerizePip: true
-    slim: true
+    dockerizePip: true  # Usa Docker para instalar dependencias
+    slim: true          # Elimina partes innecesarias de los paquetes
 
 functions:
   app:
-    handler: crud.app_handler.handler
+    handler: app.app_lambda.handler
     events:
       - http:
           path: /{proxy+}
