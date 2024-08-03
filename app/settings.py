@@ -9,7 +9,7 @@ class Settings(BaseModel):
     db_user: str = os.getenv('DB_USERNAME')
     db_password: str = os.getenv('DB_PASSWORD')
     db_name: str = os.getenv('DB_NAME')
-    db_port: int = os.getenv('DB_PORT')
+    db_port: int = int(os.getenv('DB_PORT', '3306'))  # Asegúrate de que sea un entero
 
     # Configuración de la API
     api_prefix: str = "/api/v1"
@@ -21,7 +21,10 @@ class Settings(BaseModel):
     redoc_url: str = f"{api_prefix}/redoc"
 
     # Configuración general
-    debug: bool = False
+    debug: bool = os.getenv('DEBUG', 'False').lower() == 'true'
+
+    # Añade esta línea para manejar el stage
+    stage: str = os.getenv('STAGE', 'dev')
 
     @property
     def database_url(self):

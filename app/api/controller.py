@@ -20,8 +20,8 @@ def create_cliente(customer: schemas.CustomerCreate, db: Session = Depends(get_d
     )
 
 @router.get("/customers/{phone}", response_model=schemas.Cliente)
-def read_cliente(telefono: str, db: Session = Depends(get_db)):
-    db_cliente = repository.get_cliente(db, telefono=telefono)
+def read_cliente(phone: str, db: Session = Depends(get_db)):
+    db_cliente = repository.get_cliente(db, telefono=phone)
     if db_cliente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return schemas.Cliente(
@@ -31,8 +31,8 @@ def read_cliente(telefono: str, db: Session = Depends(get_db)):
     )
 
 @router.put("/customers/{phone}", response_model=schemas.Cliente)
-def update_cliente(telefono: str, customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
-    db_cliente = repository.update_cliente(db, telefono=telefono, customer=customer)
+def update_cliente(phone: str, customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    db_cliente = repository.update_cliente(db, telefono=phone, customer=customer)
     if db_cliente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return schemas.Cliente(
@@ -41,9 +41,9 @@ def update_cliente(telefono: str, customer: schemas.CustomerCreate, db: Session 
         edad=db_cliente.edad
     )
 
-@router.delete("/customers/{phone}", response_model=None,status_code=status.HTTP_204_NO_CONTENT)
-def delete_cliente(telefono: str, db: Session = Depends(get_db)):
-    db_cliente = repository.delete_cliente(db, telefono=telefono)
+@router.delete("/customers/{phone}", response_model=None, status_code=status.HTTP_204_NO_CONTENT)
+def delete_cliente(phone: str, db: Session = Depends(get_db)):
+    db_cliente = repository.delete_cliente(db, telefono=phone)
     if db_cliente is None:
         raise HTTPException(status_code=404, detail="Customer not found")
     return None
