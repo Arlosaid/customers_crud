@@ -1,0 +1,71 @@
+service: crud-lambda-api
+frameworkVersion: "3"
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: python3.11
+  memorySize: 512
+  timeout: 120
+  stage: ${opt:stage, 'dev'}
+  deploymentBucket:
+    name: api.services.${self:provider.stage}
+    tags:
+      PROY: API
+      COMPONENT: CRUD-LAMBDA-SERVICE
+  tags:
+    ENV: ${self:provider.stage}
+    COMPONENT: CRUD-LAMBDA-SERVICE
+    PROY: API
+  logRetentionInDays: 14
+  environment:
+    STAGE: ${self:provider.stage}
+    DB_HOST: ${env:DB_HOST}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_NAME: ${env:DB_NAME}
+
+package:
+  individually: true
+  patterns:
+    - "!Makefile"
+    - "!poetry.lock"
+    - "!pyproject.toml"
+    - "!README.md"
+    - "!tests/**"
+    - "!docs/**"
+    - "!node_modules/**"
+    - "!.venv/**"
+    - "!.serverless/**"
+    - "!package.json"
+    - "!package-lock.json"
+    - "!.pytest_cache"
+    - "!.hypothesis"
+    - "!.env"
+    - "!env.example"
+    - "!.flake8"
+    - "!.editorconfig"
+    - "!.pre-commit-config.yaml"
+    - "!deploy/**"
+    - "!.mypy_cache/**"
+    - "!volume/**"
+    - "!.git/**"
+    - "!.tags/**"
+    - "!.dockerignore"
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+
+functions:
+  app:
+    handler: crud.app_handler.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
