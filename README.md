@@ -1,6 +1,6 @@
 # Lambda CRUD Project
 
-This project is an integrative CRUD exposed via API Gateway that uses AWS Lambda and MySQL to manage customer data. Below are the instructions for setting up the environment, installing dependencies, running migrations with Alembic, and deploying with Serverless.
+This project is an integrative CRUD exposed via API Gateway that uses AWS Lambda and MySQL to manage customer data. Below are the instructions for setting up the environment, installing dependencies, running migrations with Alembic, deploying with Serverless, and running Uvicorn to access Swagger.
 
 ## Project Structure
 
@@ -38,9 +38,6 @@ lambda_crud/
 ├── requirements.txt
 ├── schema.sql
 └── serverless.yml
-
-perl
-Copiar código
 
 ## Environment Setup
 
@@ -84,6 +81,18 @@ Copiar código
     ```bash
     alembic upgrade head
     ```
+
+## Running Uvicorn for Swagger
+
+To run the FastAPI application with Uvicorn and access Swagger UI:
+
+1. **Run Uvicorn**:
+    ```bash
+    uvicorn app.api.controller:app --reload
+    ```
+
+2. **Access Swagger UI**:
+    Open your browser and navigate to `http://127.0.0.1:8000/api/v1/docs` to access Swagger UI.
 
 ## Deployment with Serverless
 
