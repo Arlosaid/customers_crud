@@ -6,12 +6,12 @@ def validate_phone(v: str) -> str:
         raise ValueError('String should have at least 10 characters')
     return v
 
-class NombreCliente(BaseModel):
+class CustomerName(BaseModel):
     nombre: str
     apellido: str
 
-class ClienteBase(BaseModel):
-    nombreCliente: NombreCliente
+class CustomerBase(BaseModel):
+    nombreCliente: CustomerName
     telefono: str = Field(..., min_length=10, max_length=10)
     edad: int = Field(..., gt=17)
 
@@ -25,9 +25,9 @@ class ClienteBase(BaseModel):
             raise ValueError('Input should be greater than 17')
         return v
 
-class ClienteCreate(ClienteBase):
+class CustomerCreate(CustomerBase):
     pass
 
-class Cliente(ClienteBase):
+class Cliente(CustomerBase):
     class Config:
         orm_mode = True

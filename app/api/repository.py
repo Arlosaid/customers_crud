@@ -5,7 +5,7 @@ from app.api import schemas
 def get_cliente(db: Session, telefono: str):
     return db.query(model.Customer).filter(model.Customer.telefono == telefono).first()
 
-def create_cliente(db: Session, customer: schemas.ClienteCreate):
+def create_cliente(db: Session, customer: schemas.CustomerCreate):
     db_cliente = model.Customer(
         telefono=customer.telefono,
         nombre=customer.nombreCliente.nombre,
@@ -17,7 +17,7 @@ def create_cliente(db: Session, customer: schemas.ClienteCreate):
     db.refresh(db_cliente)
     return db_cliente
 
-def update_cliente(db: Session, telefono: str, customer: schemas.ClienteCreate):
+def update_cliente(db: Session, telefono: str, customer: schemas.CustomerCreate):
     db_cliente = get_cliente(db, telefono)
     if db_cliente:
         db_cliente.nombre = customer.nombreCliente.nombre
